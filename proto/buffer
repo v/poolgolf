@@ -1,0 +1,7 @@
+for wall in game.walls
+            if wall.collidesCircle(@position, @radius)
+                if wall.direction == 'x'
+                    @velocity.y = -@velocity.y
+                else
+                    @velocity.x = -@velocity.x
+
