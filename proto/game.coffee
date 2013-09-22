@@ -13,6 +13,7 @@ goog.require 'lime.animation.MoveTo'
 goog.require 'game.Ball'
 goog.require 'game.Board'
 goog.require 'game.CueBall'
+goog.require 'game.Pocket'
 goog.require 'game.Wall'
 
 game.start = ()->
@@ -27,23 +28,24 @@ game.start = ()->
 
     game.wall_restitution = 0.9
 
+
     director = new lime.Director(document.body, game.width, game.height)
     scene = new lime.Scene()
     game.target = new lime.Layer().setPosition(512, 384)
 
+    game.level = 1
 
-    game.cueball = new game.CueBall([(512+256) / 2, 300], '#0c0')
-    game.board = new game.Board()
+    game.scoreLabel = new lime.Label().setText('Your Score: 0')
+        .setFontFamily('Verdana')
+        .setFontColor('#000')
+        .setFontSize('20')
+        .setPosition(350, 325)
 
-    game.balls = [
-        game.cueball,
-        new game.Ball([100, 100]),
-        new game.Ball([-100, 100]),
-        new game.Ball([-400, -100]),
-        new game.Ball([-400, 100]),
-    ]
+    game.balls = []
+    game.initLevel(game.level)
+    game.turns = 0
 
-    game.num_turns = 0
+    game.target.appendChild(game.scoreLabel)
 
     scene.appendChild(game.target)
 
@@ -69,12 +71,14 @@ game.start = ()->
             line.setFill('#aaa')
 
             angle = Math.atan2(dragVector.y, dragVector.x) * 180 / Math.PI
-            console.log angle
             line.setRotation(180 - angle)
 
             game.target.appendChild(line)
         )
         e.swallow(['mouseup', 'touchend'], (f)->
+            game.turns += 1
+            game.updateScore()
+
             game.target.removeChild(line)
             diff = goog.math.Coordinate.difference(e.position, f.position)
             dragVector = new goog.math.Vec2(diff.x, diff.y)
@@ -85,11 +89,37 @@ game.start = ()->
         )
     )
 
+game.initLevel = (level) ->
+    game.target.removeAllChildren()
+    game.target.appendChild(game.scoreLabel)
+
+    game.board = new game.Board(level)
+    game.turns = 0
+    game.score = 0
+    game.updateScore()
+
+    game.cueball = game.board.cueball
+
+    game.balls = [game.cueball]
+
+    for ball in game.board.balls
+        game.balls.push(ball)
+
+
 game.step = () ->
+    if game.balls.length <= 1
+        console.log 'you win'
+        game.initLevel(game.level + 1)
+
+
     for ball in game.balls
         for other in game.balls
             if ball != other and ball.collidesBall(other)
+                console.log 'balls collide'
                 game.resolveCollision(ball, other)
+
+game.updateScore = ()->
+    game.scoreLabel.setText('Your Score: '+game.turns)
 
 game.resolveCollision = (one, two) ->
     rv = new goog.math.Vec2(two.velocity.x - one.velocity.x, two.velocity.y - one.velocity.y)

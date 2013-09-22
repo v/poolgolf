@@ -61,13 +61,22 @@ class Ball extends lime.Sprite
         # collision with walls
         for wall in game.board.walls
             if @next_collision == 0 and wall.collidesCircle(@position, @radius)
+                #collision with pockets.
+                if wall in game.board.pockets and @ != game.cueball
+                    index = game.balls.indexOf(@)
+                    if index != -1
+                        game.balls.splice(index, 1)
+
+                        game.target.removeChild(@shape)
+
+                    continue
+
                 # DIRT DIRTY HACKS
                 @next_collision = 4
                 if wall.direction == 'x'
                     @velocity.y *= -game.wall_restitution
                 if wall.direction == 'y'
                     @velocity.x *= -game.wall_restitution
-                console.log wall.layer.getPosition().toString()
 
         # collision with other balls.
         if @next_collision > 0

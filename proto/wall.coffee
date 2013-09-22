@@ -4,6 +4,7 @@ goog.require 'lime.Sprite'
 goog.require 'game'
 
 class Wall
+    color: '#000',
     constructor: (position, length, direction) ->
         THICKNESS = 6
         @layer = new lime.Layer().setPosition(position[0], position[1])
@@ -13,7 +14,7 @@ class Wall
             @rect.setSize(length, THICKNESS)
         else if direction == 'y'
             @rect.setSize(THICKNESS, length)
-        @rect.setFill('#000')
+        @rect.setFill(@color)
         @layer.appendChild(@rect)
         game.target.appendChild(@layer)
 
