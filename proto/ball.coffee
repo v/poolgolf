@@ -18,9 +18,14 @@ class Ball extends lime.Sprite
 
         @shape.setFill(color)
 
+        @touchshape = new lime.Circle()
+            .setSize(@radius * 4, @radius * 4)
+            .setPosition(@position.x, @position.y)
+
         @next_collision = 0
 
         lime.scheduleManager.schedule(@step_, @)
+        game.target.appendChild(@touchshape)
         game.target.appendChild(@shape)
 
     collidesBall: (other)->
@@ -42,6 +47,7 @@ class Ball extends lime.Sprite
 
         # set the new position
         @shape.setPosition(@position.x, @position.y)
+        @touchshape.setPosition(@position.x, @position.y)
 
         if @velocity.magnitude() > game.max_speed
             @velocity.normalize().scale(game.max_speed)

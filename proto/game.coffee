@@ -43,6 +43,8 @@ game.start = ()->
         new game.Ball([-400, 100]),
     ]
 
+    game.num_turns = 0
+
     scene.appendChild(game.target)
 
     director.makeMobileWebAppCapable()
@@ -50,9 +52,9 @@ game.start = ()->
 
     lime.scheduleManager.schedule(game.step, game)
 
-    goog.events.listen(game.cueball.shape, ['mousedown', 'touchstart'], (e)->
+    goog.events.listen(game.cueball.touchshape, ['mousedown', 'touchstart'], (e)->
         e.startDrag(true)
-        @setFill('#c00')
+        game.cueball.shape.setFill('#c00')
         line = null
         e.swallow(['mousemove', 'touchmove'], (f)->
             game.target.removeChild(line)
@@ -76,7 +78,8 @@ game.start = ()->
             game.target.removeChild(line)
             diff = goog.math.Coordinate.difference(e.position, f.position)
             dragVector = new goog.math.Vec2(diff.x, diff.y)
-            @setFill('#0c0')
+            dragVector.scale(2)
+            game.cueball.shape.setFill('#0c0')
             console.log(dragVector)
             game.cueball.applyForce(dragVector)
         )
