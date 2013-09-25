@@ -54,6 +54,24 @@ game.start = ()->
 
     lime.scheduleManager.schedule(game.step, game)
 
+
+
+game.initLevel = (level) ->
+    game.target.removeAllChildren()
+    game.target.appendChild(game.scoreLabel)
+
+    game.board = new game.Board(level)
+    game.turns = 0
+    game.score = 0
+    game.updateScore()
+
+    game.cueball = game.board.cueball
+
+    game.balls = [game.cueball]
+
+    for ball in game.board.balls
+        game.balls.push(ball)
+
     goog.events.listen(game.cueball.touchshape, ['mousedown', 'touchstart'], (e)->
         e.startDrag(true)
         game.cueball.shape.setFill('#c00')
@@ -89,27 +107,12 @@ game.start = ()->
         )
     )
 
-game.initLevel = (level) ->
-    game.target.removeAllChildren()
-    game.target.appendChild(game.scoreLabel)
-
-    game.board = new game.Board(level)
-    game.turns = 0
-    game.score = 0
-    game.updateScore()
-
-    game.cueball = game.board.cueball
-
-    game.balls = [game.cueball]
-
-    for ball in game.board.balls
-        game.balls.push(ball)
-
 
 game.step = () ->
     if game.balls.length <= 1
         console.log 'you win'
-        game.initLevel(game.level + 1)
+        game.level += 1
+        game.initLevel(game.level)
 
 
     for ball in game.balls

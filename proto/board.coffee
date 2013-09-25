@@ -35,7 +35,7 @@ class Board extends lime.Sprite
             @walls.push pocket
 
         @balls = [
-            new game.Ball([100, -100]),
+            new game.Ball([-200, -50]),
             new game.Ball([100, 100]),
         ]
 
