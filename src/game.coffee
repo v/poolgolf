@@ -26,7 +26,9 @@ game.start = ()->
     game.ball_radius = 25
     game.ball_color = '#444'
 
-    game.wall_restitution = 0.9
+    game.friction = 1.5
+
+    game.wall_restitution = 0.8
 
 
     director = new lime.Director(document.body, game.width, game.height)

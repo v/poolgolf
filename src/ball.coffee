@@ -52,11 +52,14 @@ class Ball extends lime.Sprite
         if @velocity.magnitude() > game.max_speed
             @velocity.normalize().scale(game.max_speed)
 
-        if @velocity.magnitude() < game.min_speed
-            @velocity.x = 0
-            @velocity.y = 0
+        # apply friction
+        if @velocity.magnitude() > game.friction
+            magnitude = @velocity.magnitude()
+            new_magnitude = Math.max(magnitude - game.friction, 0)
+            @velocity.normalize().scale(new_magnitude)
+        else
+            @velocity.scale(0)
 
-        @velocity.scale(0.995)
 
         # collision with walls
         for wall in game.board.walls
